@@ -185,9 +185,16 @@ def rastgele_seed_ata():
     icin seed degerini rastgele degistirir (on_click callback)."""
     st.session_state.seed_input = int(np.random.randint(0, 100000))
 
+# ONEMLI: key'i olan bir widget'a ayni anda 'value' parametresi de vermek
+# bazi Streamlit surumlerinde session_state ile catisip KeyError/AttributeError
+# uretebiliyor. Bu yuzden once session_state'i manuel baslatiyoruz, sonra
+# widget'i SADECE 'key' ile olusturuyoruz (value parametresi vermiyoruz).
+if "seed_input" not in st.session_state:
+    st.session_state.seed_input = 42
+
 st.sidebar.number_input(
     "Simulasyon Seed", min_value=0, max_value=100000, step=1,
-    key="seed_input", value=st.session_state.get("seed_input", 42),
+    key="seed_input",
     help="Ayni seed = ayni rastgele 14 gunluk veri. Asagidaki butonla yeni bir gece simule edebilirsiniz."
 )
 st.sidebar.button("\U0001F504 Yeniden Simule Et (Yeni Gece Verisi)", on_click=rastgele_seed_ata, use_container_width=True)
